@@ -1,0 +1,13 @@
+<%- include("partials/head") %> 
+<form action="/register" method="post">
+      <table>
+
+            <tr><td><label for="username">username: </label></td><td><input type="text" name="username" id="username" placeholder="username"></></tr>
+            <tr><td><label for="email">email: </label></td><td><input type="email" name="email" id="email" placeholder="email"></td></tr>
+            <tr><td><label for="emailverification">verify email: </label></td><td><input type="email" name="emailverification" id="emailverification" placeholder="verify email"></td></tr>
+            <tr><td><label for="password">password: </label></td><td><input type="password" name="password" id="password" placeholder="password"/td></tr>
+            <tr><td><label for="passwordverification">verify password: </label></td><td><input type="password" name="passwordverification" id="passwordverification" placeholder="verify password"></td></tr>
+            <tr><td><button>Register!</button></td></tr>
+      </table>
+</form>
+<%- include("partials/footer") %>

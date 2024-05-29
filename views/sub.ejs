@@ -1,0 +1,11 @@
+<%- include("partials/head") %>
+<h1>you are currently viewing the <%= sub.name %> subreddit</h1>
+<p>amount of subscribers <%= sub.members.length %></p>
+<p><%= sub.description %></p>
+<a href="/r/<%= sub.name %>/new"> create new post</a>
+
+<% for( let i = 0; i < sub.posts.length; i++ ) { %>
+      <p><%= sub.posts[i].name %></p>
+<% } %>
+<a href="/"> go back to Home </a>
+<%- include("partials/footer") %>
