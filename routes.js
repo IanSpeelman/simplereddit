@@ -10,7 +10,6 @@ const homeMessage = {
 
 module.exports.home = (req, res) => {
 	
-	console.log(req.session)
 	let msg
 	const query = req.query;
 	if(query.q){
@@ -28,11 +27,15 @@ module.exports.notfound = (req, res) => res.render("notfound", { userid: req.ses
 
 module.exports.subView = async (req, res) => {
 	const { q } = req.query;
-	const results = await schemas.Subreddit.find({ name: q });
-	if (results.length < 1) {
+	const sub = await schemas.Subreddit.find({ name: q });
+	let posts = []
+	for(let i = 0; i < sub[0].posts.length; i++){
+		posts.push(await schemas.Post.find({_id: sub[0].posts[i]}).then((data) => data[0]))
+	}
+	if (sub.length < 1) {
 		res.redirect(302, "/?q=subdoesnotexist");
 	} else {
-		res.render("sub", { sub: results[0] , userid: req.session.login, username: req.session.username});
+		res.render("sub", { posts, sub: sub[0] , userid: req.session.login, username: req.session.username});
 	}
 };
 

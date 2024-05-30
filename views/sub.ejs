@@ -4,8 +4,11 @@
 <p><%= sub.description %></p>
 <a href="/r/<%= sub.name %>/new"> create new post</a>
 
-<% for( let i = 0; i < sub.posts.length; i++ ) { %>
-      <p><%= sub.posts[i].name %></p>
+<% for( let i = 0; i < posts.length; i++ ) { %>
+      <div>
+            <h2><%= posts[i].title %></h1>
+            <p><%= posts[i].content %></p>
+      </div>
 <% } %>
 <a href="/"> go back to Home </a>
 <%- include("partials/footer") %>
