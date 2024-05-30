@@ -1,10 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const mongooseConnect = require("./exports/mongoose.js");
-mongooseConnect.connectDB();
 const app = express();
+const session = require("express-session")
+app.use(session({ secret: 'keyboard cat',resave: false,saveUninitialized: false , cookie: { maxAge: null }}))
+mongooseConnect.connectDB();
 const port = 3001;
-
 const { 
       home,
       login,
@@ -16,7 +17,8 @@ const {
       newSub,
       newPost,
       createSub,
-      createPost
+      createPost,
+      logout,
 } = require("./routes")
 
 app.use(express.urlencoded({ extended: true }));
@@ -28,8 +30,9 @@ app.get("/r", subView)
 app.get("/r/new", newSub)
 app.get("/r/:sub/new", newPost)
 app.get("/login", login)
+app.get("/logout", logout)
 app.get("/register", register)
-app.post("/login", postLogin) //!==================================login does not persist on page change, learn how to do this
+app.post("/login", postLogin)
 app.post("/register", postRegister)
 app.post("/r", createSub)
 app.post("/r/:sub", createPost)

@@ -1,6 +1,9 @@
 <%-include("partials/head")%> <% if (msg) { %>
 <p><%= msg %></p>
 <% } %>
+<% if (userid) { %>
+<p>currently logged in with user id:<%= userid%></p>
+<% } %>
 
 <h1>Welcome to Simple-Reddit</h1>
 <form action="/r" method="get">

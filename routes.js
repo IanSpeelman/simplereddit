@@ -1,5 +1,6 @@
 const schemas = require("./exports/schemas.js");
 const { v4: uuid } = require("uuid");
+
 const homeMessage = {
       "loginsucces": "Login successfull",
       "loginfail": "Login failed",
@@ -8,21 +9,22 @@ const homeMessage = {
 }
 
 module.exports.home = (req, res) => {
+	
+	console.log(req.session)
 	let msg
 	const query = req.query;
-	console.log({query, homeMessage})
 	if(query.q){
 		if(homeMessage[query.q]){
 			msg = homeMessage[query.q]
 		}
 	}
-	res.render("home", { msg });
+	res.render("home", { msg, userid: req.session.login, username: req.session.username });
 };
 module.exports.login = (req, res) => {
-	res.render("login");
+	res.render("login", { userid: req.session.login, username: req.session.username });
 };
-module.exports.register = (req, res) => res.render("register");
-module.exports.notfound = (req, res) => res.render("notfound");
+module.exports.register = (req, res) => res.render("register", { userid: req.session.login, username: req.session.username });
+module.exports.notfound = (req, res) => res.render("notfound", { userid: req.session.login, username: req.session.username });
 
 module.exports.subView = async (req, res) => {
 	const { q } = req.query;
@@ -30,7 +32,7 @@ module.exports.subView = async (req, res) => {
 	if (results.length < 1) {
 		res.redirect(302, "/?q=subdoesnotexist");
 	} else {
-		res.render("sub", { sub: results[0] });
+		res.render("sub", { sub: results[0] , userid: req.session.login, username: req.session.username});
 	}
 };
 
@@ -61,13 +63,22 @@ module.exports.postLogin = async (req, res) => {
 		password: password,
 	});
 	if (result.length === 1) {
+		req.session.login = result[0]._id
+		req.session.username = result[0].username
 		res.redirect(302, "/?q=loginsucces");
 	} else {
+		req.session.login = false
+		req.session.username = null
 		res.redirect(302, "/?q=loginfail");
 	}
 };
+module.exports.logout = (req,res) => {
+	req.session.login = false
+	req.session.username = null
+	res.redirect(302, "/")
+}
 
-module.exports.newSub = (req, res) => res.render("newsub");
+module.exports.newSub = (req, res) => res.render("newsub", { userid: req.session.login, username: req.session.username });
 
 module.exports.createSub = async (req, res) => {
 	const { title, description } = req.body;
@@ -85,7 +96,7 @@ module.exports.createSub = async (req, res) => {
 };
 
 module.exports.newPost = (req, res) => {
-	res.render("newpost", { sub: req.params.sub });
+	res.render("newpost", { sub: req.params.sub ,userid: req.session.login, username: req.session.username });
 };
 module.exports.createPost = async (req, res) => {
 	const { sub, content, title } = req.body;
@@ -100,7 +111,6 @@ module.exports.createPost = async (req, res) => {
 			schemas.Subreddit.find({ name: sub }).then((result) => {
 				const res = result[0]
 				res.posts.push(id)
-				console.log(res.posts)
 				schemas.Subreddit.updateOne({name: res.name}, {$set: {posts: res.posts}}).then(() => {
 				})
 			});

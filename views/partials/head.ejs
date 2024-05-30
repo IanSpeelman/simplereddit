@@ -15,6 +15,9 @@
 						<li><a href="/login">login</a></li>
 						<li><a href="/register">register</a></li>
 						<li><a href="/r/new">create new sub</a></li>
+						<% if (userid) { %>
+						 <li><a href="/logout">logout (<%= username %>)</a></li>
+						<% } else { }%>
 					</ul>
 				</nav>
 			</section>
