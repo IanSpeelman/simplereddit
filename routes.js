@@ -98,8 +98,9 @@ module.exports.createSub = async (req, res) => {
 	res.redirect(302, "/");
 };
 
-module.exports.newPost = (req, res) => {
-	res.render("newpost", { sub: req.params.sub ,userid: req.session.login, username: req.session.username });
+module.exports.newPost = async (req, res) => {
+	const sub = await schemas.Subreddit.find({name: req.params.sub}).then(data => data)
+	res.render("newpost", { sub: sub[0] ,userid: req.session.login, username: req.session.username });
 };
 module.exports.createPost = async (req, res) => {
 	const { sub, content, title } = req.body;
@@ -118,6 +119,5 @@ module.exports.createPost = async (req, res) => {
 				})
 			});
 		});
-
-	res.redirect(302, "/");
+		res.redirect(302, `/r?q=${sub}`);
 };
