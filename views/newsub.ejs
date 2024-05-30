@@ -1,7 +1,27 @@
 <%- include("partials/head") %>
-<form action="/r" method="post">
-      <label for="title">title: </label><input type="text" name="title" id="title">
-      <label for="description">description: </label><input type="text" name="description" id="description">
-      <button>Create new sub!</button>
-</form>
+
+
+<div class="subcontainer">
+      <section id="subheader">
+            <div>
+                  <h1><a href="/r?q=<%= sub.name %>">r/<%= sub.name %></a></h1>
+                  <p>amount of subscribers <%= sub.members.length %></p>
+                  <p><%= sub.description %></p>
+            </div>
+            <div class="highlight button">
+                  <a href="/r/<%= sub.name %>/new"> create new post</a>
+            </div>
+      </section>
+      <section id="postcontainer">
+            <form action="/r" method="post">
+                  <label for="title">title: </label><input type="text" name="title" id="title">
+                  <label for="description">description: </label><input type="text" name="description" id="description">
+                  <button>Create new sub!</button>
+            </form>
+             
+      </section>
+</div>
+
+
+
 <%- include("partials/footer") %>
