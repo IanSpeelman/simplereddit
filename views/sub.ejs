@@ -1,22 +1,23 @@
 <%- include("partials/head") %>
-<section id="subheader">
-      <div>
-            <h1>R/<%= sub.name %></h1>
-            <p>amount of subscribers <%= sub.members.length %></p>
-            <p><%= sub.description %></p>
-      </div>
-      <div>
-            <a href="/r/<%= sub.name %>/new"> create new post</a>
-      </div>
-</section>
-<section id="postcontainer">
-      <% for( let i = 0; i < posts.length; i++ ) { %>
-      <div class="post">
-            <h2><%= posts[i].title %></h1>
-                  <p><%= posts[i].content %></p>
+<div class="subcontainer">
+      <section id="subheader">
+            <div>
+                  <h1><a href="/r?q=<%= sub.name %>">r/<%= sub.name %></a></h1>
+                  <p>amount of subscribers <%= sub.members.length %></p>
+                  <p><%= sub.description %></p>
             </div>
-      <% } %>
-
-</section>
-<a href="/"> go back to Home </a>
+            <div class="highlight button">
+                  <a href="/r/<%= sub.name %>/new"> create new post</a>
+            </div>
+      </section>
+      <section id="postcontainer">
+            <% for( let i = 0; i < posts.length; i++ ) { %>
+            <div class="post">
+                  <h2><%= posts[i].title %></h1>
+                        <p><%= posts[i].content %></p>
+                  </div>
+            <% } %>
+      
+      </section>
+</div>
 <%- include("partials/footer") %>
