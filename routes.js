@@ -1,9 +1,22 @@
 const schemas = require("./exports/schemas.js");
 const { v4: uuid } = require("uuid");
+const homeMessage = {
+      "loginsucces": "Login successfull",
+      "loginfail": "Login failed",
+      "subdoesnotexist": "This subreddit does not exist",
+      "accountcreated": "Created account successfully"
+}
 
 module.exports.home = (req, res) => {
+	let msg
 	const query = req.query;
-	res.render("home", { query });
+	console.log({query, homeMessage})
+	if(query.q){
+		if(homeMessage[query.q]){
+			msg = homeMessage[query.q]
+		}
+	}
+	res.render("home", { msg });
 };
 module.exports.login = (req, res) => {
 	res.render("login");
@@ -15,7 +28,7 @@ module.exports.subView = async (req, res) => {
 	const { q } = req.query;
 	const results = await schemas.Subreddit.find({ name: q });
 	if (results.length < 1) {
-		res.redirect(302, "/?sub=false");
+		res.redirect(302, "/?q=subdoesnotexist");
 	} else {
 		res.render("sub", { sub: results[0] });
 	}
@@ -39,7 +52,7 @@ module.exports.postRegister = async (req, res) => {
 			.save()
 			.then(() => null);
 	}
-	res.redirect(302, "/?account=true");
+	res.redirect(302, "/?q=accountcreated");
 };
 module.exports.postLogin = async (req, res) => {
 	const { username, password } = req.body;
@@ -48,9 +61,9 @@ module.exports.postLogin = async (req, res) => {
 		password: password,
 	});
 	if (result.length === 1) {
-		res.redirect(302, "/?login=true");
+		res.redirect(302, "/?q=loginsucces");
 	} else {
-		res.redirect(302, "/?login=false");
+		res.redirect(302, "/?q=loginfail");
 	}
 };
 

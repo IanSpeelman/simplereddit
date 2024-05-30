@@ -2,10 +2,22 @@ const express = require("express");
 const mongoose = require("mongoose");
 const mongooseConnect = require("./exports/mongoose.js");
 mongooseConnect.connectDB();
-
 const app = express();
 const port = 3001;
-const { home, login, register, subView, notfound, postRegister, postLogin, newSub, newPost, createSub,createPost } = require("./routes")
+
+const { 
+      home,
+      login,
+      register,
+      subView,
+      notfound,
+      postRegister,
+      postLogin,
+      newSub,
+      newPost,
+      createSub,
+      createPost
+} = require("./routes")
 
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");

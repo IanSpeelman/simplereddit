@@ -1,15 +1,7 @@
-<%-include("partials/head")%> <% if (query.account === "true") { %>
-<p>Account created successfully</p>
+<%-include("partials/head")%> <% if (msg) { %>
+<p><%= msg %></p>
 <% } %>
-<% if (query.sub === "false") { %>
- <p>Subreddit does not exist</p>
-<% } %>
-<% if (query.login === "true") { %>
- <p>login success</p>
-<% } %>
-<% if (query.login === "false") { %>
- <p>login failed, please try again <a href="/login">here!</a></p>
-<% } %>
+
 <h1>Welcome to Simple-Reddit</h1>
 <form action="/r" method="get">
 	<label for="sub">what subreddit do you want to view</label>
