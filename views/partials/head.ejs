@@ -4,23 +4,31 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="/css/style.css">
 	</head>
 	<body>
 		<header>
-			<section>
-				<h1>welcome to simple reddit</h1>
-				<nav>
-					<ul>
-						<li><a href="/">Home</a></li>
+			<div>
+				<a href="/"><h1>Simple reddit</h1></a>
+			</div>
+			<form action="/r">
+				<input type="text" name="q" id="homesearch" placeholder="Search">
+			</form>
+			<nav>
+				<ul>
+					<% if (userid) { %>
+					 <li><a href="/logout" class="highlight">logout (<%= username %>)</a></li>
+					<% } else { %>
 						<li><a href="/login">login</a></li>
-						<li><a href="/register">register</a></li>
-						<li><a href="/r/new">create new sub</a></li>
-						<% if (userid) { %>
-						 <li><a href="/logout">logout (<%= username %>)</a></li>
-						<% } else { }%>
-					</ul>
-				</nav>
-			</section>
+					<li ><a href="/register" class="highlight">register</a></li>
+					<% }%>
+				</ul>
+			</nav>
+			
 		</header>
 	</body>
 </html>
+<div class="maincontainer">

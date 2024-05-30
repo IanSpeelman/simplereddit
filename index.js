@@ -5,6 +5,7 @@ const app = express();
 const session = require("express-session")
 app.use(session({ secret: 'keyboard cat',resave: false,saveUninitialized: false , cookie: { maxAge: null }}))
 mongooseConnect.connectDB();
+app.use(express.static(`${__dirname}/public`))
 const port = 3001;
 const { 
       home,

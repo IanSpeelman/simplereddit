@@ -1,14 +1,22 @@
 <%- include("partials/head") %>
-<h1>you are currently viewing the <%= sub.name %> subreddit</h1>
-<p>amount of subscribers <%= sub.members.length %></p>
-<p><%= sub.description %></p>
-<a href="/r/<%= sub.name %>/new"> create new post</a>
-
-<% for( let i = 0; i < posts.length; i++ ) { %>
+<section id="subheader">
       <div>
-            <h2><%= posts[i].title %></h1>
-            <p><%= posts[i].content %></p>
+            <h1>R/<%= sub.name %></h1>
+            <p>amount of subscribers <%= sub.members.length %></p>
+            <p><%= sub.description %></p>
       </div>
-<% } %>
+      <div>
+            <a href="/r/<%= sub.name %>/new"> create new post</a>
+      </div>
+</section>
+<section id="postcontainer">
+      <% for( let i = 0; i < posts.length; i++ ) { %>
+      <div class="post">
+            <h2><%= posts[i].title %></h1>
+                  <p><%= posts[i].content %></p>
+            </div>
+      <% } %>
+
+</section>
 <a href="/"> go back to Home </a>
 <%- include("partials/footer") %>
