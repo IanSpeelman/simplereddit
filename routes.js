@@ -9,6 +9,7 @@ const homeMessage = {
 	"oops": "Oops, something went wrong. Please try again",
 	"logout": "You have been logged out",
 	"subcreated": "New sub has been created",
+	"requirelogin":  "you need to be logged in to do this",
 	}
 
 module.exports.home = (req, res) => {
@@ -120,19 +121,24 @@ module.exports.newPost = async (req, res) => {
 module.exports.createPost = async (req, res) => {
 	const { sub, content, title } = req.body;
 	const id = uuid();
-	new schemas.Post({
-		_id: id,
-		title: title,
-		content: content,
-		subreddit: sub,
-		author: req.session.login
-	})
-		.save()
-		.then(() => {
-			res.redirect(302, `/r?q=${sub}`);
+	if(!req.session.login){
+		res.redirect(302, "/login")
+	}
+	else{
+		new schemas.Post({
+			_id: id,
+			title: title,
+			content: content,
+			subreddit: sub,
+			author: req.session.login
 		})
-		.catch(err => {
-			console.log(err)
-			res.redirect(302, "/?q=oops")
-		})
+			.save()
+			.then(() => {
+				res.redirect(302, `/r?q=${sub}`);
+			})
+			.catch(err => {
+				console.log(err)
+				res.redirect(302, "/?q=oops")
+			})
+	}
 };
