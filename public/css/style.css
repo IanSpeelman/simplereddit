@@ -56,7 +56,12 @@ header nav ul{
       display: flex;
       flex-direction: column;
       align-items: center;
-      
+}
+#subheader button {
+      margin-top: .4em;
+}
+#subheader .highlight {
+      color: black;
 }
 .button{
       width: 100%;
@@ -64,7 +69,7 @@ header nav ul{
       border: none;
       border-radius: 5em;
       background-color: #575757;
-      margin: .2em;
+      /* margin: .2em; */
       color: white;
       text-decoration: none;
       text-align: center;
@@ -80,6 +85,32 @@ header nav ul{
       transition: box-shadow .2s ease-in-out;
       box-shadow: 0px 0px 0px #f48c06;
 }
+.highlight a{
+      text-decoration: none;
+      color: black;
+}
 .highlight:hover{
       box-shadow: 0px 0px 10px #f48c06;
+}
+.form{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 30em;
+      
+}
+.form form {
+      padding: 1em;
+      display: flex;
+      flex-direction: column;
+}
+.form form input{
+      background-color: #575757;
+      border: 1px solid #343434;
+      padding: 1em;
+      margin: 0;
+      margin-bottom: 1em;
+      border-radius: 3em;
+      width: 20em;
 }
