@@ -89,7 +89,12 @@ module.exports.logout = (req,res) => {
 
 module.exports.newSub = (req, res) => {
 	const {q} = req.query;
-	res.render("newsub", { q, userid: req.session.login, username: req.session.username })
+	if(!req.session.login){
+		res.redirect(302, "/login")
+	}
+	else{
+		res.render("newsub", { q, userid: req.session.login, username: req.session.username })
+	}
 };
 
 module.exports.createSub = async (req, res) => {
@@ -111,34 +116,34 @@ module.exports.createSub = async (req, res) => {
 };
 
 module.exports.newPost = async (req, res) => {
-	await schemas.Subreddit.find({name: req.params.sub}).then(sub => {
-		res.render("newpost", { sub: sub[0] ,userid: req.session.login, username: req.session.username });
-	})
-	.catch(err => {
-		res.redirect(302, "/?q=oops")
-	})
-};
-module.exports.createPost = async (req, res) => {
-	const { sub, content, title } = req.body;
-	const id = uuid();
 	if(!req.session.login){
 		res.redirect(302, "/login")
 	}
 	else{
-		new schemas.Post({
-			_id: id,
-			title: title,
-			content: content,
-			subreddit: sub,
-			author: req.session.login
+		await schemas.Subreddit.find({name: req.params.sub}).then(sub => {
+			res.render("newpost", { sub: sub[0] ,userid: req.session.login, username: req.session.username });
 		})
-			.save()
-			.then(() => {
-				res.redirect(302, `/r?q=${sub}`);
-			})
-			.catch(err => {
-				console.log(err)
-				res.redirect(302, "/?q=oops")
-			})
+		.catch(err => {
+			res.redirect(302, "/?q=oops")
+		})
 	}
+};
+module.exports.createPost = async (req, res) => {
+	const { sub, content, title } = req.body;
+	const id = uuid();
+	new schemas.Post({
+		_id: id,
+		title: title,
+		content: content,
+		subreddit: sub,
+		author: req.session.login
+	})
+		.save()
+		.then(() => {
+			res.redirect(302, `/r?q=${sub}`);
+		})
+		.catch(err => {
+			console.log(err)
+			res.redirect(302, "/?q=oops")
+		})
 };
