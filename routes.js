@@ -31,19 +31,8 @@ module.exports.notfound = (req, res) => res.render("notfound", { userid: req.ses
 module.exports.subView = async (req, res) => {
 	const { q } = req.query;
 	const sub = await schemas.Subreddit.find({ name: q });
-	let posts = []
-	if(sub.length){
-		for(let i = 0; i < sub[0].posts.length; i++){
-			posts.push(await schemas.Post.find({_id: sub[0].posts[i]}).then((data) => data[0]))
-		}
-		if (sub.length < 1) {
-			res.redirect(302, "/?q=subdoesnotexist");
-		} else {
-			res.render("sub", { posts, sub: sub[0] , userid: req.session.login, username: req.session.username});
-		}
-	}else{
-		res.render("notfound", {userid: req.session.login, username: req.session.username})
-	}
+	const posts = await schemas.Post.find({ subreddit: q })
+	res.render("sub", { posts, sub: sub[0] , userid: req.session.login, username: req.session.username});
 };
 
 module.exports.postRegister = async (req, res) => {
@@ -100,8 +89,7 @@ module.exports.createSub = async (req, res) => {
 		_id: uuid(),
 		name: title,
 		description: description,
-		members: [],
-		posts: [],
+		members: []
 	})
 		.save()
 		.then(() => {
@@ -128,21 +116,15 @@ module.exports.createPost = async (req, res) => {
 		_id: id,
 		title: title,
 		content: content,
+		subreddit: sub,
+		author: req.session.login
 	})
 		.save()
 		.then(() => {
-			schemas.Subreddit.find({ name: sub }).then(result => {
-				const responce = result[0]
-				responce.posts.push(id)
-				schemas.Subreddit.updateOne({name: responce.name}, {$set: {posts: responce.posts}}).then(() => {
-				})
-				.catch(err => {
-					res.redirect(302, "/?q=oops")
-				})
-				res.redirect(302, `/r?q=${sub}`);
-			});
+			res.redirect(302, `/r?q=${sub}`);
 		})
 		.catch(err => {
+			console.log(err)
 			res.redirect(302, "/?q=oops")
 		})
 };

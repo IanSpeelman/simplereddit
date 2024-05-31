@@ -16,9 +16,6 @@ const subredditSchema = new mongoose.Schema({
       },
       members: {
             type: Array
-      },
-      posts:{
-            type: Array
       }
 })
 const Subreddit = new mongoose.model('Subreddit', subredditSchema)
@@ -58,6 +55,14 @@ const postSchema = new mongoose.Schema({
             required: true
       },
       content: {
+            type: String,
+            required: true
+      },
+      subreddit: { 
+            type: String, 
+            required: true
+      },
+      author: {
             type: String,
             required: true
       }
