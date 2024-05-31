@@ -59,7 +59,9 @@ header nav ul{
       
 }
 .button{
+      width: 100%;
       padding: .75em 1.5em;
+      border: none;
       border-radius: 5em;
       background-color: #575757;
       margin: .2em;
@@ -73,8 +75,8 @@ header nav ul{
       color: white;
 }
 .highlight{
-      background-color: #f48c06;
       color: black;
+      background-color: #f48c06;
       transition: box-shadow .2s ease-in-out;
       box-shadow: 0px 0px 0px #f48c06;
 }

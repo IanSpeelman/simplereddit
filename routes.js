@@ -10,6 +10,7 @@ const homeMessage = {
 	"logout": "You have been logged out",
 	"subcreated": "New sub has been created",
 	"requirelogin":  "you need to be logged in to do this",
+	"alreadymember": "you are a member already, no need for this twice right?"
 	}
 
 module.exports.home = (req, res) => {
@@ -34,7 +35,8 @@ module.exports.subView = async (req, res) => {
 	const sub = await schemas.Subreddit.find({ name: q });
 	if(sub.length){
 		const posts = await schemas.Post.find({ subreddit: q })
-		res.render("sub", { posts, sub: sub[0] , userid: req.session.login, username: req.session.username});
+		const subscribed = sub[0].members.includes(req.session.login)
+		res.render("sub", { posts, sub: sub[0], subscribed , userid: req.session.login, username: req.session.username});
 	}
 	else{
 		res.redirect(302, `/r/new?q=${q}`)
@@ -147,3 +149,37 @@ module.exports.createPost = async (req, res) => {
 			res.redirect(302, "/?q=oops")
 		})
 };
+module.exports.subscribe = async (req, res) => {
+	const {sub } = req.params
+	const { login } = req.session
+	if(login){
+		schemas.Subreddit.findOne({name: sub}).then(data => {
+			if(!data.members.includes(login)){
+				data.members.push(login)
+				schemas.Subreddit.updateOne({name: sub}, {members: data.members}).then(data => {
+					res.redirect(302, `/r?q=${sub}`)
+				})
+				.catch(err => {
+					res.redirect(302, "/?q=oops")
+				})
+			}
+			else{
+				const index = data.members.indexOf(req.session.login)
+				data.members.splice(index, 1)
+				schemas.Subreddit.updateOne({name: sub}, {members: data.members}).then(data => {
+					res.redirect(302, `/r?q=${sub}`)
+				})
+				.catch(err => {
+					res.redirect(302, "/?q=oops")
+				})
+			}
+		})
+		.catch(err => {
+			res.redirect(302, "/?q=oops")
+		})
+	}
+	else{
+		res.redirect(302, "/?q=requirelogin")
+	}
+}
+

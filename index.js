@@ -20,6 +20,7 @@ const {
       createSub,
       createPost,
       logout,
+      subscribe,
 } = require("./routes")
 
 app.use(express.urlencoded({ extended: true }));
@@ -37,6 +38,7 @@ app.post("/login", postLogin)
 app.post("/register", postRegister)
 app.post("/r", createSub)
 app.post("/r/:sub", createPost)
+app.post("/r/:sub/subscribe", subscribe)
 // app.post("/r", createSub)
 
 app.get("*", notfound);

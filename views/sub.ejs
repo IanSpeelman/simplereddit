@@ -6,9 +6,10 @@
                   <p>amount of subscribers <%= sub.members.length %></p>
                   <p><%= sub.description %></p>
             </div>
-            <div class="highlight button">
+            <div class="button highlight">
                   <a href="/r/<%= sub.name %>/new"> create new post</a>
             </div>
+                  <button form="subscribe" class="button"><%= subscribed?"unsubscribe":"subscribe" %></button>
       </section>
       <section id="postcontainer">
             <% for( let i = 0; i < posts.length; i++ ) { %>
@@ -20,4 +21,5 @@
       
       </section>
 </div>
+<form action="/r/<%= sub.name %>/subscribe" method="post" id="subscribe"></form>
 <%- include("partials/footer") %>
