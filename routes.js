@@ -31,8 +31,13 @@ module.exports.notfound = (req, res) => res.render("notfound", { userid: req.ses
 module.exports.subView = async (req, res) => {
 	const { q } = req.query;
 	const sub = await schemas.Subreddit.find({ name: q });
-	const posts = await schemas.Post.find({ subreddit: q })
-	res.render("sub", { posts, sub: sub[0] , userid: req.session.login, username: req.session.username});
+	if(sub.length){
+		const posts = await schemas.Post.find({ subreddit: q })
+		res.render("sub", { posts, sub: sub[0] , userid: req.session.login, username: req.session.username});
+	}
+	else{
+		res.redirect(302, `/r/new?q=${q}`)
+	}
 };
 
 module.exports.postRegister = async (req, res) => {
@@ -81,7 +86,10 @@ module.exports.logout = (req,res) => {
 	res.redirect(302, "/?q=logout")
 }
 
-module.exports.newSub = (req, res) => res.render("newsub", { userid: req.session.login, username: req.session.username });
+module.exports.newSub = (req, res) => {
+	const {q} = req.query;
+	res.render("newsub", { q, userid: req.session.login, username: req.session.username })
+};
 
 module.exports.createSub = async (req, res) => {
 	const { title, description } = req.body;

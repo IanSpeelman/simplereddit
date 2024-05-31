@@ -3,9 +3,11 @@
 
 <div class="subcontainer">
       <section id="postcontainer">
+            <h1>This subreddit does not exist, do you want to create it?</h1>
             <form action="/r" method="post">
                   <label for="title">title: </label><input type="text" name="title" id="title">
                   <label for="description">description: </label><input type="text" name="description" id="description">
+                  <input type="hidden" name="sub" id="sub" value="<%= q %>">
                   <button>Create new sub!</button>
             </form>
              
