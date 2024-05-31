@@ -5,16 +5,19 @@ const homeMessage = {
       "loginsucces": "Login successfull",
       "loginfail": "Login failed",
       "subdoesnotexist": "This subreddit does not exist",
-      "accountcreated": "Created account successfully"
-}
+      "accountcreated": "Created account successfully",
+	"oops": "Oops, something went wrong. Please try again",
+	"logout": "You have been logged out",
+	"subcreated": "New sub has been created",
+	}
 
 module.exports.home = (req, res) => {
 	
 	let msg
-	const query = req.query;
-	if(query.q){
-		if(homeMessage[query.q]){
-			msg = homeMessage[query.q]
+	const {q} = req.query;
+	if(q){
+		if(homeMessage[q]){
+			msg = homeMessage[q]
 		}
 	}
 	res.render("home", { msg, userid: req.session.login, username: req.session.username });
@@ -29,13 +32,17 @@ module.exports.subView = async (req, res) => {
 	const { q } = req.query;
 	const sub = await schemas.Subreddit.find({ name: q });
 	let posts = []
-	for(let i = 0; i < sub[0].posts.length; i++){
-		posts.push(await schemas.Post.find({_id: sub[0].posts[i]}).then((data) => data[0]))
-	}
-	if (sub.length < 1) {
-		res.redirect(302, "/?q=subdoesnotexist");
-	} else {
-		res.render("sub", { posts, sub: sub[0] , userid: req.session.login, username: req.session.username});
+	if(sub.length){
+		for(let i = 0; i < sub[0].posts.length; i++){
+			posts.push(await schemas.Post.find({_id: sub[0].posts[i]}).then((data) => data[0]))
+		}
+		if (sub.length < 1) {
+			res.redirect(302, "/?q=subdoesnotexist");
+		} else {
+			res.render("sub", { posts, sub: sub[0] , userid: req.session.login, username: req.session.username});
+		}
+	}else{
+		res.render("notfound", {userid: req.session.login, username: req.session.username})
 	}
 };
 
@@ -55,9 +62,13 @@ module.exports.postRegister = async (req, res) => {
 			password: password,
 		})
 			.save()
-			.then(() => null);
+			.then(() => {
+				res.redirect(302, "/?q=accountcreated");
+			})
+			.catch(err => {
+				res.redirect(302, "/?q=oops")
+			})
 	}
-	res.redirect(302, "/?q=accountcreated");
 };
 module.exports.postLogin = async (req, res) => {
 	const { username, password } = req.body;
@@ -78,7 +89,7 @@ module.exports.postLogin = async (req, res) => {
 module.exports.logout = (req,res) => {
 	req.session.login = false
 	req.session.username = null
-	res.redirect(302, "/")
+	res.redirect(302, "/?q=logout")
 }
 
 module.exports.newSub = (req, res) => res.render("newsub", { userid: req.session.login, username: req.session.username });
@@ -93,14 +104,22 @@ module.exports.createSub = async (req, res) => {
 		posts: [],
 	})
 		.save()
-		.then(() => null);
+		.then(() => {
+			res.redirect(302, "/?q=subcreated");
+		})
+		.catch(err => {
+			res.redirect(302, "/?q=oops")
+		})
 
-	res.redirect(302, "/");
 };
 
 module.exports.newPost = async (req, res) => {
-	const sub = await schemas.Subreddit.find({name: req.params.sub}).then(data => data)
-	res.render("newpost", { sub: sub[0] ,userid: req.session.login, username: req.session.username });
+	await schemas.Subreddit.find({name: req.params.sub}).then(sub => {
+		res.render("newpost", { sub: sub[0] ,userid: req.session.login, username: req.session.username });
+	})
+	.catch(err => {
+		res.redirect(302, "/?q=oops")
+	})
 };
 module.exports.createPost = async (req, res) => {
 	const { sub, content, title } = req.body;
@@ -112,12 +131,18 @@ module.exports.createPost = async (req, res) => {
 	})
 		.save()
 		.then(() => {
-			schemas.Subreddit.find({ name: sub }).then((result) => {
-				const res = result[0]
-				res.posts.push(id)
-				schemas.Subreddit.updateOne({name: res.name}, {$set: {posts: res.posts}}).then(() => {
+			schemas.Subreddit.find({ name: sub }).then(result => {
+				const responce = result[0]
+				responce.posts.push(id)
+				schemas.Subreddit.updateOne({name: responce.name}, {$set: {posts: responce.posts}}).then(() => {
 				})
+				.catch(err => {
+					res.redirect(302, "/?q=oops")
+				})
+				res.redirect(302, `/r?q=${sub}`);
 			});
-		});
-		res.redirect(302, `/r?q=${sub}`);
+		})
+		.catch(err => {
+			res.redirect(302, "/?q=oops")
+		})
 };
