@@ -60,6 +60,9 @@ header nav ul{
 #subheader button {
       margin-top: .4em;
 }
+#subheader a{
+      color: black;
+}
 #subheader .highlight {
       color: black;
 }
