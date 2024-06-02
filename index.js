@@ -43,6 +43,4 @@ app.post("/r/:sub/subscribe", subscribe)
 
 app.get("*", notfound);
 
-// const { v4: uuid } = require("uuid");
-
 app.listen(port, () => console.log(`app running on: http://localhost:${port}`));

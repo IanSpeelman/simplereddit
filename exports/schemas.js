@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-
-
 const subredditSchema = new mongoose.Schema({
       _id: {
             type: String,
@@ -18,7 +16,11 @@ const subredditSchema = new mongoose.Schema({
             type: Array
       }
 })
+subredditSchema.methods.getAllPosts = async function() {
+      return await Post.find({subreddit: this.name})
+}
 const Subreddit = new mongoose.model('Subreddit', subredditSchema)
+
 
 const userSchema = new mongoose.Schema({
       _id: {
